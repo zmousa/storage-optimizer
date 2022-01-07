@@ -20,13 +20,19 @@ def main():
     print("######################################################")
     print("##################### Account 1 ######################")
     print("######################################################")
-    account1_creds = auth()    
+    account1_creds = auth(tokenFile = './token1.json')    
     list_drive_account_files(account1_creds)
 
     print("######################################################")
     print("##################### Account 2 ######################")
     print("######################################################")
-    account2_creds = auth('./credentials2.json', './token2.json')
+    account2_creds = auth(tokenFile = './token2.json')
+    list_drive_account_files(account2_creds)
+
+    print("######################################################")
+    print("##################### Account 3 ######################")
+    print("######################################################")
+    account2_creds = auth(tokenFile = './token3.json')
     list_drive_account_files(account2_creds)
 
 
