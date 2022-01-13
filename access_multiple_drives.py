@@ -12,7 +12,7 @@ from googleapiclient.errors import HttpError
 # credentials.json & credentials2.json in the folder
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
+SCOPES = ['https://www.googleapis.com/auth/drive.metadata', 'https://www.googleapis.com/auth/drive']
 
 
 def auth(credentialsFile = './credentials.json', tokenFile = './token.json'):
@@ -56,7 +56,7 @@ def list_drive_account_files(creds,mimeType,drive_account="main_account"):
             ## Mimetypes:  ["application/pdf","image/jpeg","image/png","application/zip","application/rar","application/tar","video/mp4","video/x-msvideo","video/x-ms-wmv"]
             response = service.files().list(q=q,
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum,createdTime,modifiedTime)',
+                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum, createdTime, modifiedTime)',
                                             pageToken=page_token).execute()
 
             ## save it into Pandas
@@ -103,6 +103,14 @@ def get_duplicated_files_ids(files_list_df):
     
     ## return the file ids for the duplicated files that needs to be deleted
     return files_list_df.loc[duplicated_indices,['id',"account"]].values.tolist()
+
+## Permanently delete a file, skipping the trash.
+def delete_file(creds, file_id):
+    try:
+        service = build('drive', 'v3', credentials=creds)
+        service.files().delete(fileId=file_id).execute()
+    except HttpError as error:
+        print(f'An error occurred: {error}')
 
 def main():
     # socket.setdefaulttimeout(600)

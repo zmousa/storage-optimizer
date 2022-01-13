@@ -1,1 +1,5 @@
 *.json
+.ipynb_checkpoints
+.DS_Store
+.vscode
+__pycache__
