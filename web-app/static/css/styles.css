@@ -1,0 +1,16 @@
+body{
+	padding-top:50px;
+	background-color:white;
+}
+
+.hiddenRow {
+    padding: 0 !important;
+}
+
+.formDelete {
+    margin-bottom: 0;
+}
+
+.table {
+    margin-bottom: 5%;
+}
