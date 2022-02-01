@@ -7,47 +7,63 @@
 <!--    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">-->
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"/>
+	  <link rel="stylesheet" type="text/css" href="{% static 'css/themify-icons.css' %}"/>
 <!--	<script src="{% static 'js/bootstrap.min.js' %}"></script>-->
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
   <body>
     <div class="container">
-	  <center><h1 style="color:white; margin: 2%">Storage Optimizer</h1></center>
+	  	<div class="header-title">Storage Optimizer</div>
+	    <center><div class="header-subtitle">Save drive space by removing the duplicated files</div></center>
+		<div class="checkboxes">
+		  <input class="form-switch" type="checkbox" id="switchCheckVideos" checked>
+		  <label class="form-check-label" for="switchCheckVideos">Removing duplicated files in Videos</label>
+		</div>
+		<div class="checkboxes">
+		  <input class="form-switch" type="checkbox" id="switchCheckImages" checked>
+		  <label class="form-check-label" for="switchCheckImages">Removing duplicated files in Images</label>
+		</div>
+		<div class="checkboxes">
+		  <input class="form-switch" type="checkbox" id="switchCheckPdfs">
+		  <label class="form-check-label" for="switchCheckPdfs">Removing duplicated files in Pdfs</label>
+		</div>
+		<div class="row">
+			<div class="col text-center">
+				<button type="button" class="btn btn-lg btn-success btn-optimize">Optimize</button>
+			</div>
+	  	</div>
 	</div>
 
-    <div class="container">
+	<div class="container grid">
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
-			Pdfs
+			  <span class="icon-name ti-video-camera"></span>Videos
 		  </div>
           <div class="panel-body">
+			{% if videos|length == 0 %}
+			  <center>There are no duplicated files found for videos</center>
+			{% else %}
 			<table class="table table-condensed table-striped">
 				<thead>
 					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>Size</th>
-						<th>Type</th>
-						<th>Duplicates</th>
-						<th></th>
+						<th width="22%">Name</th>
+						<th width="22%">Size (MB)</th>
+						<th width="22%">Type</th>
+						<th width="22%">Duplicates</th>
+						<th width="12%"></th>
 					</tr>
 				</thead>
-
 				<tbody>
-				    {% for file_checksum, files in pdfs.items %}
+				    {% for file_checksum, files in videos.items %}
 					<tr data-toggle="collapse" data-target="#{{ file_checksum }}" class="accordion-toggle">
-					   	<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>
-						<td>
-							{{ files.0.name }}
-							<small class="text-muted d-block">{{ file_checksum }}</small>
-					  	</td>
+						<td>{{ files.0.name }}</td>
 					  	<td class="align-middle">{{ files.0.size }}</td>
 					  	<td class="align-middle">{{ files.0.mime_type }}</td>
 						<td class="align-middle">{{ files|length }}</td>
 					  	<td class="align-middle">
-
+							<button type="button" class="btn btn-primary">View</button>
 					  	</td>
 					</tr>
 
@@ -57,11 +73,11 @@
 						  		<table class="table table-striped">
 									<thead>
 										<tr>
-											<th>Name</th>
-											<th>Size</th>
-											<th>Create Date</th>
-											<th>Modified Date</th>
-											<th></th>
+											<th width="22%">Name</th>
+											<th width="22%">Size (MB)</th>
+											<th width="22%">Create Date</th>
+											<th width="22%">Modified Date</th>
+											<th width="12%"></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -87,43 +103,42 @@
 				    {% endfor %}
 			  </tbody>
 			</table>
+			{% endif %}
 		  </div>
 		</div>
 	  </div>
 	</div>
 
-	<div class="container">
+    <div class="container grid">
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
-			Images
+			  <span class="icon-name ti-image"></span>Images
 		  </div>
           <div class="panel-body">
+			{% if images|length == 0 %}
+			  <center>There are no duplicated files found for images</center>
+			{% else %}
 			<table class="table table-condensed table-striped">
 				<thead>
 					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>Size</th>
-						<th>Type</th>
-						<th>Duplicates</th>
-						<th></th>
+						<th width="22%">Name</th>
+						<th width="22%">Size (MB)</th>
+						<th width="22%">Type</th>
+						<th width="22%">Duplicates</th>
+						<th width="12%"></th>
 					</tr>
 				</thead>
 
 				<tbody>
 				    {% for file_checksum, files in images.items %}
 					<tr data-toggle="collapse" data-target="#{{ file_checksum }}" class="accordion-toggle">
-					   	<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>
-						<td>
-							{{ files.0.name }}
-							<small class="text-muted d-block">{{ file_checksum }}</small>
-					  	</td>
+						<td>{{ files.0.name }}</td>
 					  	<td class="align-middle">{{ files.0.size }}</td>
 					  	<td class="align-middle">{{ files.0.mime_type }}</td>
 						<td class="align-middle">{{ files|length }}</td>
 					  	<td class="align-middle">
-
+							<button type="button" class="btn btn-primary">View</button>
 					  	</td>
 					</tr>
 
@@ -133,11 +148,11 @@
 						  		<table class="table table-striped">
 									<thead>
 										<tr>
-											<th>Name</th>
-											<th>Size</th>
-											<th>Create Date</th>
-											<th>Modified Date</th>
-											<th></th>
+											<th width="22%">Name</th>
+											<th width="22%">Size (MB)</th>
+											<th width="22%">Create Date</th>
+											<th width="22%">Modified Date</th>
+											<th width="12%"></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -163,43 +178,42 @@
 				    {% endfor %}
 			  </tbody>
 			</table>
+			{% endif %}
 		  </div>
 		</div>
 	  </div>
 	</div>
 
-	<div class="container">
+    <div class="container grid">
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
-			Videos
+			  <span class="icon-name ti-files"></span>Pdfs
 		  </div>
           <div class="panel-body">
+			{% if pdfs|length == 0 %}
+			  <center>There are no duplicated files found for pdfs</center>
+			{% else %}
 			<table class="table table-condensed table-striped">
 				<thead>
 					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>Size</th>
-						<th>Type</th>
-						<th>Duplicates</th>
-						<th></th>
+						<th width="22%">Name</th>
+						<th width="22%">Size (MB)</th>
+						<th width="22%">Type</th>
+						<th width="22%">Duplicates</th>
+						<th width="12%"></th>
 					</tr>
 				</thead>
 
 				<tbody>
-				    {% for file_checksum, files in videos.items %}
+				    {% for file_checksum, files in pdfs.items %}
 					<tr data-toggle="collapse" data-target="#{{ file_checksum }}" class="accordion-toggle">
-					   	<td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>
-						<td>
-							{{ files.0.name }}
-							<small class="text-muted d-block">{{ file_checksum }}</small>
-					  	</td>
+						<td>{{ files.0.name }}</td>
 					  	<td class="align-middle">{{ files.0.size }}</td>
 					  	<td class="align-middle">{{ files.0.mime_type }}</td>
 						<td class="align-middle">{{ files|length }}</td>
 					  	<td class="align-middle">
-
+							<button type="button" class="btn btn-primary">View</button>
 					  	</td>
 					</tr>
 
@@ -209,11 +223,11 @@
 						  		<table class="table table-striped">
 									<thead>
 										<tr>
-											<th>Name</th>
-											<th>Size</th>
-											<th>Create Date</th>
-											<th>Modified Date</th>
-											<th></th>
+											<th width="22%">Name</th>
+											<th width="22%">Size (MB)</th>
+											<th width="22%">Create Date</th>
+											<th width="22%">Modified Date</th>
+											<th width="12%"></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -239,11 +253,20 @@
 				    {% endfor %}
 			  </tbody>
 			</table>
+			{% endif %}
 		  </div>
 		</div>
 	  </div>
 	</div>
 
+	<footer class="page-footer font-small blue">
+
+	  <!-- Copyright -->
+	  <div class="footer-copyright text-center py-3">© 2022 All rights reserved -
+		<a href="{% url 'imprint' %}"> imprint </a>
+	  </div>
+	  <!-- Copyright -->
+	</footer>
   </body>
 </html>
 {% include "confirm_modal.html" %}

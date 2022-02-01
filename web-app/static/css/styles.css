@@ -1,6 +1,10 @@
-body{
+body {
 	padding-top:50px;
-	background-color:white;
+	background-color:#ffffff;
+}
+
+.grid {
+    width: 90% !important;
 }
 
 .hiddenRow {
@@ -12,5 +16,55 @@ body{
 }
 
 .table {
-    margin-bottom: 5%;
+    margin-bottom: 1%;
+}
+
+.btn-optimize {
+    font-size: 40px;
+    margin: 2%;
+}
+
+.header-title {
+    font-size: 42px;
+    letter-spacing: 0;
+    font-weight: 600;
+    color: #383e45;
+    margin-bottom: 8px;
+    line-height: 46px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.header-subtitle {
+    max-width: 800px;
+    font-size: 22px;
+    font-weight: 400;
+    color: #383e45;
+    letter-spacing: 0;
+    margin: 0 auto 8px;
+    line-height: 32px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.icon-name {
+	margin-right: 5px;
+	font-size: 1em;
+	transition: .3s;
+}
+
+.form-check-label {
+    font-size: 22px;
+    font-weight: 400;
+    color: #383e45;
+    letter-spacing: 0;
+}
+
+.checkboxes {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 35%;
 }

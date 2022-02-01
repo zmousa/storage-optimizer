@@ -40,12 +40,16 @@ def get_mime_type(mimeType):
         return ""
 
 
-def auth():
+def auth(google_client_id=None):
+    file_name = ""
+    if google_client_id is not None:
+        file_name = f"./tokens/{google_client_id}.json"
+
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first time.
-    if os.path.exists('./token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if google_client_id is not None and os.path.exists(file_name):
+        creds = Credentials.from_authorized_user_file(file_name, SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -54,7 +58,7 @@ def auth():
             flow = InstalledAppFlow.from_client_secrets_file('./credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('./token.json', 'w') as token:
+        with open(f"./tokens/{creds.client_id}.json", 'w') as token:
             token.write(creds.to_json())
     return creds
 
@@ -83,7 +87,10 @@ def get_duplicated_files_ids(files_list_df):
     if files_list_df.empty:
         return []
     # convert column size to integer for sorting purposes
-    files_list_df["size"] = pd.to_numeric(files_list_df["size"])
+    files_list_df["size"] = round(pd.to_numeric(files_list_df["size"]) / 1024 / 1024, 3)
+
+    files_list_df["createdTime"] = files_list_df.apply(lambda row: str(row["createdTime"])[:-5].replace('T', ' '), axis=1)
+    files_list_df["modifiedTime"] = files_list_df.apply(lambda row: str(row["modifiedTime"])[:-5].replace('T', ' '), axis=1)
     # group the files by md5checksum and keep only the duplicated files.
     # sorting them to keep the oldest created file as the first occurrence version of the duplicates
     files_list_df = files_list_df[files_list_df.md5Checksum.isin(
