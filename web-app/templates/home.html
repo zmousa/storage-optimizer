@@ -4,38 +4,40 @@
   <head>
     <meta charset="utf-8">
     <title>Storage Optimizer</title>
-<!--    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">-->
-	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-      <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"/>
-	  <link rel="stylesheet" type="text/css" href="{% static 'css/themify-icons.css' %}"/>
-<!--	<script src="{% static 'js/bootstrap.min.js' %}"></script>-->
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/themify-icons.css' %}"/>
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
   </head>
   <body>
     <div class="container">
 	  	<div class="header-title">Storage Optimizer</div>
 	    <center><div class="header-subtitle">Save drive space by removing the duplicated files</div></center>
-		<div class="checkboxes">
-		  <input class="form-switch" type="checkbox" id="switchCheckVideos" checked>
-		  <label class="form-check-label" for="switchCheckVideos">Removing duplicated files in Videos</label>
-		</div>
-		<div class="checkboxes">
-		  <input class="form-switch" type="checkbox" id="switchCheckImages" checked>
-		  <label class="form-check-label" for="switchCheckImages">Removing duplicated files in Images</label>
-		</div>
-		<div class="checkboxes">
-		  <input class="form-switch" type="checkbox" id="switchCheckPdfs">
-		  <label class="form-check-label" for="switchCheckPdfs">Removing duplicated files in Pdfs</label>
-		</div>
-		<div class="row">
-			<div class="col text-center">
-				<button type="button" class="btn btn-lg btn-success btn-optimize">Optimize</button>
+		<form action="/drive" method="post">
+			<div class="checkboxes">
+			  <input class="form-switch" type="checkbox" name="switchCheckVideos" id="switchCheckVideos" value="True" {% if videos_flag == 1 %} checked{% endif %}>
+			  <label class="form-check-label" for="switchCheckVideos">Removing duplicated files in Videos</label>
 			</div>
-	  	</div>
+			<div class="checkboxes">
+			  <input class="form-switch" type="checkbox" name="switchCheckImages" id="switchCheckImages" value="True" {% if images_flag == 1 %} checked{% endif %}>
+			  <label class="form-check-label" for="switchCheckImages">Removing duplicated files in Images</label>
+			</div>
+			<div class="checkboxes">
+			  <input class="form-switch" type="checkbox" name="switchCheckPdfs" id="switchCheckPdfs" value="True" {% if pdfs_flag == 1 %} checked{% endif %}>
+			  <label class="form-check-label" for="switchCheckPdfs">Removing duplicated files in Pdfs</label>
+			</div>
+			<div class="row">
+				<div class="col text-center">
+					{% csrf_token %}
+					<button type="submit" class="btn btn-lg btn-success btn-optimize">Optimize</button>
+				</div>
+			</div>
+		</form>
 	</div>
 
-	<div class="container grid">
+	{% if videos_grid == 1 %}
+		<div class="container grid">
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
@@ -108,8 +110,10 @@
 		</div>
 	  </div>
 	</div>
+	{% endif %}
 
-    <div class="container grid">
+	{% if images_grid == 1 %}
+    	<div class="container grid">
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
@@ -183,81 +187,84 @@
 		</div>
 	  </div>
 	</div>
+	{% endif %}
 
-    <div class="container grid">
-	  <div class="col-md-12">
-    	<div class="panel panel-default">
-		  <div class="panel-heading">
-			  <span class="icon-name ti-files"></span>Pdfs
-		  </div>
-          <div class="panel-body">
-			{% if pdfs|length == 0 %}
-			  <center>There are no duplicated files found for pdfs</center>
-			{% else %}
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr>
-						<th width="22%">Name</th>
-						<th width="22%">Size (MB)</th>
-						<th width="22%">Type</th>
-						<th width="22%">Duplicates</th>
-						<th width="12%"></th>
-					</tr>
-				</thead>
+	{% if pdfs_grid == 1 %}
+		<div class="container grid">
+		  <div class="col-md-12">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+				  <span class="icon-name ti-files"></span>Pdfs
+			  </div>
+			  <div class="panel-body">
+				{% if pdfs|length == 0 %}
+				  <center>There are no duplicated files found for pdfs</center>
+				{% else %}
+				<table class="table table-condensed table-striped">
+					<thead>
+						<tr>
+							<th width="22%">Name</th>
+							<th width="22%">Size (MB)</th>
+							<th width="22%">Type</th>
+							<th width="22%">Duplicates</th>
+							<th width="12%"></th>
+						</tr>
+					</thead>
 
-				<tbody>
-				    {% for file_checksum, files in pdfs.items %}
-					<tr data-toggle="collapse" data-target="#{{ file_checksum }}" class="accordion-toggle">
-						<td>{{ files.0.name }}</td>
-					  	<td class="align-middle">{{ files.0.size }}</td>
-					  	<td class="align-middle">{{ files.0.mime_type }}</td>
-						<td class="align-middle">{{ files|length }}</td>
-					  	<td class="align-middle">
-							<button type="button" class="btn btn-primary">View</button>
-					  	</td>
-					</tr>
+					<tbody>
+						{% for file_checksum, files in pdfs.items %}
+						<tr data-toggle="collapse" data-target="#{{ file_checksum }}" class="accordion-toggle">
+							<td>{{ files.0.name }}</td>
+							<td class="align-middle">{{ files.0.size }}</td>
+							<td class="align-middle">{{ files.0.mime_type }}</td>
+							<td class="align-middle">{{ files|length }}</td>
+							<td class="align-middle">
+								<button type="button" class="btn btn-primary">View</button>
+							</td>
+						</tr>
 
-					<tr>
-						<td colspan="12" class="hiddenRow">
-							<div class="accordian-body collapse" id="{{ file_checksum }}">
-						  		<table class="table table-striped">
-									<thead>
-										<tr>
-											<th width="22%">Name</th>
-											<th width="22%">Size (MB)</th>
-											<th width="22%">Create Date</th>
-											<th width="22%">Modified Date</th>
-											<th width="12%"></th>
-										</tr>
-									</thead>
-									<tbody>
-									    {% for file in files %}
-										<tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
-											<td>{{ file.name }}</td>
-											<td class="align-middle">{{ file.size }}</td>
-											<td class="align-middle">{{ file.create_date }}</td>
-					  						<td class="align-middle">{{ file.modified_date }}</td>
-											<td class="align-middle">
-												<form style="margin-bottom: 0;" method="post" action="{% url 'delete' file_id=file.file_id %}" name="{{file.file_id}}">
-													{% csrf_token %}
-													<button type="button" class="btn btn-danger confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" file="{{file.file_id}}" title='{{file.name}}'>Delete</button>
-												</form>
-											</td>
-										</tr>
-									    {% endfor %}
-									</tbody>
-								</table>
-              				</div>
-          				</td>
-        			</tr>
-				    {% endfor %}
-			  </tbody>
-			</table>
-			{% endif %}
+						<tr>
+							<td colspan="12" class="hiddenRow">
+								<div class="accordian-body collapse" id="{{ file_checksum }}">
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th width="22%">Name</th>
+												<th width="22%">Size (MB)</th>
+												<th width="22%">Create Date</th>
+												<th width="22%">Modified Date</th>
+												<th width="12%"></th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for file in files %}
+											<tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
+												<td>{{ file.name }}</td>
+												<td class="align-middle">{{ file.size }}</td>
+												<td class="align-middle">{{ file.create_date }}</td>
+												<td class="align-middle">{{ file.modified_date }}</td>
+												<td class="align-middle">
+													<form style="margin-bottom: 0;" method="post" action="{% url 'delete' file_id=file.file_id %}" name="{{file.file_id}}">
+														{% csrf_token %}
+														<button type="button" class="btn btn-danger confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" file="{{file.file_id}}" title='{{file.name}}'>Delete</button>
+													</form>
+												</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+				  </tbody>
+				</table>
+				{% endif %}
+			  </div>
+			</div>
 		  </div>
 		</div>
-	  </div>
-	</div>
+	{% endif %}
 
 	<footer class="page-footer font-small blue">
 
