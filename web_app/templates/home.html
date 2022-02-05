@@ -12,7 +12,7 @@
   </head>
   <body>
     <div class="container">
-	  	<div class="header-title">Storage Optimizer</div>
+	  	<div class="header-title">Drive Space Saver</div>
 	    <center><div class="header-subtitle">Save drive space by removing the duplicated files</div></center>
 		<form action="/drive" method="post">
 			<div class="checkboxes">
@@ -30,7 +30,7 @@
 			<div class="row">
 				<div class="col text-center">
 					{% csrf_token %}
-					<button type="submit" class="btn btn-lg btn-success btn-optimize" id="optimizeBtn">Optimize</button>
+					<button type="submit" class="btn btn-lg btn-success btn-optimize" id="optimizeBtn">Find Duplicates</button>
 				</div>
 			</div>
 		</form>
@@ -50,7 +50,7 @@
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
-			  <span class="icon-name ti-video-camera"></span>Videos
+			  <span class="icon-name ti-video-camera"></span>Duplicated video files
 		  </div>
           <div class="panel-body">
 			{% if videos|length == 0 %}
@@ -62,7 +62,7 @@
 						<th width="22%">Name</th>
 						<th width="22%">Size (MB)</th>
 						<th width="22%">Type</th>
-						<th width="22%">Duplicates</th>
+						<th width="22%">#Duplicates</th>
 						<th width="12%"></th>
 					</tr>
 				</thead>
@@ -126,7 +126,7 @@
 	  <div class="col-md-12">
     	<div class="panel panel-default">
 		  <div class="panel-heading">
-			  <span class="icon-name ti-image"></span>Images
+			  <span class="icon-name ti-image"></span>Duplicated image files
 		  </div>
           <div class="panel-body">
 			{% if images|length == 0 %}
@@ -138,7 +138,7 @@
 						<th width="22%">Name</th>
 						<th width="22%">Size (MB)</th>
 						<th width="22%">Type</th>
-						<th width="22%">Duplicates</th>
+						<th width="22%">#Duplicates</th>
 						<th width="12%"></th>
 					</tr>
 				</thead>
@@ -203,7 +203,7 @@
 		  <div class="col-md-12">
 			<div class="panel panel-default">
 			  <div class="panel-heading">
-				  <span class="icon-name ti-files"></span>Pdfs
+				  <span class="icon-name ti-files"></span>duplicated Pdf files
 			  </div>
 			  <div class="panel-body">
 				{% if pdfs|length == 0 %}
@@ -215,7 +215,7 @@
 							<th width="22%">Name</th>
 							<th width="22%">Size (MB)</th>
 							<th width="22%">Type</th>
-							<th width="22%">Duplicates</th>
+							<th width="22%">#Duplicates</th>
 							<th width="12%"></th>
 						</tr>
 					</thead>

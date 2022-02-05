@@ -44,11 +44,13 @@ def auth(google_client_id=None):
     file_name = ""
     if google_client_id is not None:
         file_name = f"./tokens/{google_client_id}.json"
+        print("file_name is: "+file_name)
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first time.
     if google_client_id is not None and os.path.exists(file_name):
+        print("file with the google client id is already existed")
         creds = Credentials.from_authorized_user_file(file_name, SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -63,7 +65,7 @@ def auth(google_client_id=None):
     return creds
 
 
-def list_files(creds, query):
+def list_files(creds, query,file_size_filter=1048576):
     files_list_df = pd.DataFrame()
     try:
         socket.setdefaulttimeout(600)
@@ -80,6 +82,8 @@ def list_files(creds, query):
                 break
     except HttpError as error:
         print(f'An error occurred: {error}')
+    ## return the files only that is greater than predefined size filter e.g. 1 MB
+    files_list_df=files_list_df[pd.to_numeric(files_list_df["size"])>=file_size_filter]
     return files_list_df
 
 
@@ -87,7 +91,7 @@ def get_duplicated_files_ids(files_list_df):
     if files_list_df.empty:
         return []
     # convert column size to integer for sorting purposes
-    files_list_df["size"] = round(pd.to_numeric(files_list_df["size"]) / 1024 / 1024, 3)
+    files_list_df["size"] = round(pd.to_numeric(files_list_df["size"]) / 1024 / 1024, 1)
 
     files_list_df["createdTime"] = files_list_df.apply(lambda row: str(row["createdTime"])[:-5].replace('T', ' '), axis=1)
     files_list_df["modifiedTime"] = files_list_df.apply(lambda row: str(row["modifiedTime"])[:-5].replace('T', ' '), axis=1)
@@ -101,7 +105,6 @@ def get_duplicated_files_ids(files_list_df):
     duplicated_indices = files_list_df.duplicated(subset=['md5Checksum'], keep='first')
     duplicated_indices = duplicated_indices[duplicated_indices != False].index.values.tolist()
     duplicated_indices = files_list_df.loc[duplicated_indices].values.tolist()
-
     drive_duplicates = []
     for file in duplicated_indices:
         # print(file[0], file[1], file[2], file[3], file[4], file[5], file[6])
