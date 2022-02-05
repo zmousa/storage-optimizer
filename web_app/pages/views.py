@@ -40,7 +40,7 @@ def home(request):
         pdfs_grid = switch_pdfs
     else:
         switch_videos = True
-        switch_images = True
+        #switch_images = True
 
     response = render(request, 'home.html', {
         'pdfs': pdfs_duplicates,
