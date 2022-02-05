@@ -2,6 +2,8 @@ from __future__ import print_function
 
 import os.path
 import socket
+
+from sqlalchemy import null
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -64,6 +66,28 @@ def auth(google_client_id=None):
             token.write(creds.to_json())
     return creds
 
+## get the file path assuming there is a single parent folder for the file.
+def get_file_path(creds,file_id):
+    service = build('drive', 'v3', credentials=creds)
+    parent_id=file_id
+    names=[];path=""
+    while True :
+        response=service.files().get(fileId=parent_id, fields='id,name, parents').execute()
+        try:
+            if "parents" in response : 
+                if(len(response["parents"])!=0):
+                     parent_id=response["parents"][0]
+                     names.append(response["name"])
+                else:
+                    break
+            else:
+                break
+    
+        except HttpError as error:
+            print(f'An error occurred: {error}')
+    for item in reversed(names):
+        path+="/"+item
+    return path
 
 def list_files(creds, query,file_size_filter=1048576):
     files_list_df = pd.DataFrame()
@@ -74,7 +98,7 @@ def list_files(creds, query,file_size_filter=1048576):
         while True:
             response = service.files().list(q=query,
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum, createdTime, modifiedTime)',
+                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum, createdTime, modifiedTime,parents)',
                                             pageToken=page_token).execute()
             files_list_df = files_list_df.append(pd.DataFrame(response.get('files', [])), ignore_index=True)
             page_token = response.get('nextPageToken', None)
