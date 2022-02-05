@@ -30,10 +30,18 @@
 			<div class="row">
 				<div class="col text-center">
 					{% csrf_token %}
-					<button type="submit" class="btn btn-lg btn-success btn-optimize">Optimize</button>
+					<button type="submit" class="btn btn-lg btn-success btn-optimize" id="optimizeBtn">Optimize</button>
 				</div>
 			</div>
 		</form>
+	</div>
+
+	<div class="spinner" style="display:none;" id="spinnerDiv">
+	  <div class="rect1"></div>
+	  <div class="rect2"></div>
+	  <div class="rect3"></div>
+	  <div class="rect4"></div>
+	  <div class="rect5"></div>
 	</div>
 
 	{% if videos_grid == 1 %}
@@ -266,7 +274,7 @@
 		</div>
 	{% endif %}
 
-	<footer class="page-footer font-small blue">
+	<footer id="footer" class="page-footer font-small blue">
 
 	  <!-- Copyright -->
 	  <div class="footer-copyright text-center py-3">© 2022 All rights reserved -
@@ -277,3 +285,9 @@
   </body>
 </html>
 {% include "confirm_modal.html" %}
+
+<script>
+$('#optimizeBtn').click(function() {
+  $('#spinnerDiv').show();
+});
+</script>
