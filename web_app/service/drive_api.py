@@ -3,7 +3,6 @@ from __future__ import print_function
 import os.path
 import socket
 
-from sqlalchemy import null
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -98,7 +97,7 @@ def list_files(creds, query,file_size_filter=1048576):
         while True:
             response = service.files().list(q=query,
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum, createdTime, modifiedTime,parents)',
+                                            fields='nextPageToken, files(id, name, size, mimeType, md5Checksum, createdTime, modifiedTime)',
                                             pageToken=page_token).execute()
             files_list_df = files_list_df.append(pd.DataFrame(response.get('files', [])), ignore_index=True)
             page_token = response.get('nextPageToken', None)
