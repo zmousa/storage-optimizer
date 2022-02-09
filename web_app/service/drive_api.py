@@ -105,8 +105,9 @@ def list_files(creds, query,file_size_filter=1048576):
                 break
     except HttpError as error:
         print(f'An error occurred: {error}')
-    ## return the files only that is greater than predefined size filter e.g. 1 MB
-    files_list_df=files_list_df[pd.to_numeric(files_list_df["size"])>=file_size_filter]
+    if len(files_list_df)>0 :
+        ## return the files only that is greater than predefined size filter e.g. 1 MB
+        files_list_df=files_list_df[pd.to_numeric(files_list_df["size"])>=file_size_filter]
     return files_list_df
 
 
