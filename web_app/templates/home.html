@@ -75,7 +75,7 @@
 					  	<td class="align-middle">{{ files.0.mime_type }}</td>
 						<td class="align-middle">{{ files|length }}</td>
 					  	<td class="align-middle">
-							<button type="button" class="btn btn-primary">View</button>
+                            <button type="button" class="btn btn-primary" id="view_{{ file_checksum }}" onclick="view('{{ file_checksum }}')">View</button>
 					  	</td>
 					</tr>
 
@@ -85,19 +85,22 @@
 						  		<table class="table table-striped">
 									<thead>
 										<tr>
-											<th width="22%">Name</th>
-											<th width="22%">Size (MB)</th>
-											<th width="22%">Create Date</th>
-											<th width="22%">Modified Date</th>
-											<th width="12%"></th>
-										</tr>
+                                            <th width="15%">Name</th>
+                                            <th width="15%">Size (MB)</th>
+                                            <th width="30%">Path</th>
+                                            <th width="15%">Create Date</th>
+                                            <th width="15%">Modified Date</th>
+                                            <th width="10%"></th>
+                                        </tr>
 									</thead>
 									<tbody>
 									    {% for file in files %}
 										<tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
-											<td>{{ file.name }}</td>
+											<div class="class_{{ file_checksum }}" style="display: none;">{{ file.file_id }}</div>
+                                            <td>{{ file.name }}</td>
 											<td class="align-middle">{{ file.size }}</td>
-											<td class="align-middle">{{ file.create_date }}</td>
+											<td class="align-middle"><div id="path_{{ file.file_id }}"></div></td>
+                                            <td class="align-middle">{{ file.create_date }}</td>
 					  						<td class="align-middle">{{ file.modified_date }}</td>
 											<td class="align-middle">
 												<form style="margin-bottom: 0;" method="post" action="{% url 'delete' file_id=file.file_id %}" name="{{file.file_id}}">
@@ -152,7 +155,7 @@
 					  	<td class="align-middle">{{ files.0.mime_type }}</td>
 						<td class="align-middle">{{ files|length }}</td>
 					  	<td class="align-middle">
-							<button type="button" class="btn btn-primary">View</button>
+                            <button type="button" class="btn btn-primary" id="view_{{ file_checksum }}" onclick="view('{{ file_checksum }}')">View</button>
 					  	</td>
 					</tr>
 
@@ -162,19 +165,22 @@
 						  		<table class="table table-striped">
 									<thead>
 										<tr>
-											<th width="22%">Name</th>
-											<th width="22%">Size (MB)</th>
-											<th width="22%">Create Date</th>
-											<th width="22%">Modified Date</th>
-											<th width="12%"></th>
-										</tr>
+                                            <th width="15%">Name</th>
+                                            <th width="15%">Size (MB)</th>
+                                            <th width="30%">Path</th>
+                                            <th width="15%">Create Date</th>
+                                            <th width="15%">Modified Date</th>
+                                            <th width="10%"></th>
+                                        </tr>
 									</thead>
 									<tbody>
 									    {% for file in files %}
 										<tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
-											<td>{{ file.name }}</td>
+											<div class="class_{{ file_checksum }}" style="display: none;">{{ file.file_id }}</div>
+                                            <td>{{ file.name }}</td>
 											<td class="align-middle">{{ file.size }}</td>
-											<td class="align-middle">{{ file.create_date }}</td>
+											<td class="align-middle"><div id="path_{{ file.file_id }}"></div></td>
+                                            <td class="align-middle">{{ file.create_date }}</td>
 					  						<td class="align-middle">{{ file.modified_date }}</td>
 											<td class="align-middle">
 												<form style="margin-bottom: 0;" method="post" action="{% url 'delete' file_id=file.file_id %}" name="{{file.file_id}}">
@@ -229,7 +235,7 @@
 							<td class="align-middle">{{ files.0.mime_type }}</td>
 							<td class="align-middle">{{ files|length }}</td>
 							<td class="align-middle">
-								<button type="button" class="btn btn-primary">View</button>
+								<button type="button" class="btn btn-primary" id="view_{{ file_checksum }}" onclick="view('{{ file_checksum }}')">View</button>
 							</td>
 						</tr>
 
@@ -239,18 +245,21 @@
 									<table class="table table-striped">
 										<thead>
 											<tr>
-												<th width="22%">Name</th>
-												<th width="22%">Size (MB)</th>
-												<th width="22%">Create Date</th>
-												<th width="22%">Modified Date</th>
-												<th width="12%"></th>
+												<th width="15%">Name</th>
+												<th width="15%">Size (MB)</th>
+												<th width="30%">Path</th>
+												<th width="15%">Create Date</th>
+												<th width="15%">Modified Date</th>
+												<th width="10%"></th>
 											</tr>
 										</thead>
 										<tbody>
 											{% for file in files %}
 											<tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
-												<td>{{ file.name }}</td>
+												<div class="class_{{ file_checksum }}" style="display: none;">{{ file.file_id }}</div>
+                                                <td>{{ file.name }}</td>
 												<td class="align-middle">{{ file.size }}</td>
+												<td class="align-middle"><div id="path_{{ file.file_id }}"></div></td>
 												<td class="align-middle">{{ file.create_date }}</td>
 												<td class="align-middle">{{ file.modified_date }}</td>
 												<td class="align-middle">
@@ -292,12 +301,24 @@
 	$('#optimizeBtn').click(function() {
 	  $('#spinnerDiv').show();
 	});
-	</script>
 
-<script>
+    function view(checksum) {
+      var class_name = '.class_##'.replace('##', checksum);
+	  $(class_name).each(function(i, obj) {
+        var file_id = obj.innerHTML
+        var path = '{% url "path" file_id=0 %}'.replace('0', file_id);
+        $.ajax({
+            url: path,
+            success: function (data) {
+                $("#pdfsFilePath").text(data);
+                var path_div = '#path_##'.replace('##', file_id);
+                $(path_div).text(data);
+            }
+        });
+      });
+	}
+
 	// Script for the scroll to the top button
-	//Get the button
-	
 	var mybutton = document.getElementById("topBtn");
 	
 	// When the user scrolls down 20px from the top of the document, show the button
@@ -316,4 +337,4 @@
 	  document.body.scrollTop = 0;
 	  document.documentElement.scrollTop = 0;
 	}
-	</script>
+</script>

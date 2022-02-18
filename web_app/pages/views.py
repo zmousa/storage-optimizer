@@ -3,6 +3,7 @@ import service.drive_api as drive_api
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 
 
 def home(request):
@@ -60,11 +61,19 @@ def home(request):
 
 
 def delete(request, file_id):
-    creds = drive_api.auth()
+    google_client_id = request.COOKIES.get('google_client_id')
+    creds = drive_api.auth(google_client_id)
     print(f"Deleting file: {file_id}")
     drive_api.delete_file(creds, file_id)
     response = redirect('/drive')
     return response
+
+
+def path(request, file_id):
+    google_client_id = request.COOKIES.get('google_client_id')
+    creds = drive_api.auth(google_client_id)
+    file_path = drive_api.get_file_path(creds, file_id)
+    return HttpResponse(file_path)
 
 
 def imprint(request):
